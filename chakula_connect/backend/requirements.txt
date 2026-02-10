@@ -1,0 +1,11 @@
+Django>=4.2
+djangorestframework
+psycopg2-binary
+pandas
+scikit-learn
+africastalking
+# sentinelhub-py
+python-dotenv
+django-cors-headers
+whitenoise
+djangorestframework-simplejwt
