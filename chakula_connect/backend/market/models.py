@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 from farmers.models import Produce, Farmer
 
 class Buyer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='buyer_profile')
     name = models.CharField(max_length=100)
     organization_type = models.CharField(max_length=50, choices=[('SCHOOL', 'School'), ('HOSPITAL', 'Hospital'), ('WHOLESALER', 'Wholesaler'), ('NGO', 'NGO')])
     phone_number = models.CharField(max_length=15)

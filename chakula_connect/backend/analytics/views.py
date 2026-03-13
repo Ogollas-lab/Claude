@@ -7,6 +7,10 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from datetime import datetime, timedelta
 
+from django.db.models import Sum, Q
+from django.views.decorators.cache import cache_page
+
+@cache_page(60 * 15) # Cache for 15 minutes
 def drought_map_data(request):
     """
     Returns data for the Okoa Heatmap.
@@ -17,18 +21,24 @@ def drought_map_data(request):
 
     # 1. Get Food Surplus Data
     surplus_data = []
-    farmers_with_produce = Farmer.objects.filter(produce__available=True).distinct()
+    
+    # FIX: Optimize N+1 query using annotate
+    farmers_with_produce = Farmer.objects.filter(
+        produce__available=True, 
+        latitude__isnull=False, 
+        longitude__isnull=False
+    ).annotate(
+        total_qty=Sum('produce__quantity_kg', filter=Q(produce__available=True))
+    ).distinct()
     
     for farmer in farmers_with_produce:
-        total_qty = farmer.produce.filter(available=True).aggregate(Sum('quantity_kg'))['quantity_kg__sum'] or 0
-        if farmer.latitude and farmer.longitude:
-             surplus_data.append({
-                'type': 'surplus',
-                'lat': farmer.latitude,
-                'lng': farmer.longitude,
-                'weight': float(total_qty), # Weight for heatmap
-                'details': f"{farmer.name}: {total_qty}kg produce"
-            })
+         surplus_data.append({
+            'type': 'surplus',
+            'lat': farmer.latitude,
+            'lng': farmer.longitude,
+            'weight': float(farmer.total_qty or 0), # Weight for heatmap
+            'details': f"{farmer.name}: {farmer.total_qty or 0}kg produce"
+        })
 
     # 2. Mock SentinelHub Data (Simulating drought in Northern Kenya)
     # In production, this would call SentinelHub API
@@ -49,6 +59,7 @@ def drought_map_data(request):
 
     return JsonResponse(response_data)
 
+@cache_page(60 * 60) # Cache forecast for 1 hour
 def price_forecast(request):
     """
     Predicts produce prices for the next 6 months using Linear Regression.

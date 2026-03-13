@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 # from django.contrib.gis.db import models as gis_models
 
 class Farmer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='farmer_profile')
     phone_number = models.CharField(max_length=15, unique=True)
     name = models.CharField(max_length=100)
     # location = gis_models.PointField(srid=4326, blank=True, null=True)  # Geo-tag from USSD/Tower -- Requies GDAL

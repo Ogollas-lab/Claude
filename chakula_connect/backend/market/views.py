@@ -33,7 +33,7 @@ class OrderCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         # 1. Save (Serializer handles creation logic)
-        return serializer.save(order_id=str(uuid.uuid4())[:8].upper())
+        order = serializer.save(order_id=str(uuid.uuid4())[:8].upper())
         
         # 2. Get Farmer Details
         farmer = order.produce.farmer
@@ -41,6 +41,8 @@ class OrderCreateView(generics.CreateAPIView):
         # 3. Send SMS Alert
         msg = f"Habari {farmer.name}! Order #{order.order_id} placed for {order.quantity_ordered_kg}kg of your {order.produce.crop_type}. Buyer: {order.buyer.name}. Prepare for collection."
         send_sms(farmer.phone_number, msg)
+
+        return order
 
 
 

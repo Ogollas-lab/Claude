@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.urls import path, include
 from farmers.views import ussd_callback, FarmerCreateView
 from analytics.views import drought_map_data, price_forecast
 from market.views import order_list, OrderCreateView, RegisterView, ProduceListView
@@ -22,4 +23,5 @@ urlpatterns = [
     path('api/orders/create/', OrderCreateView.as_view(), name='order_create'),
     path('api/products/', ProduceListView.as_view(), name='product_list'),
     path('api/payments/initiate/', InitiatePaymentView.as_view(), name='initiate_payment'),
+    path('api/logistics/', include('logistics.urls')),
 ]

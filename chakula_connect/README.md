@@ -6,10 +6,11 @@ Chakula Connect is a digital marketplace designed to bridge the gap between farm
 
 -   **Marketplace**: Direct-to-consumer listings for farmers. Buyers can browse crops by type, price, and location.
 -   **Farmer Management**: Profile management for farmers, including location geotagging and produce listing.
--   **Logistics**: Tools for coordinating transport and delivery of produce.
--   **Analytics**: Dashboard for tracking market trends, prices, and supply levels.
+-   **Logistics**: Tracking tools for active deliveries and REST APIs to sync carrier status with order fulfillments.
+-   **Analytics**: AI-powered dashboard tracking market trends, price forecasts, and food surplus heatmaps.
 -   **Digital Payments**: Integration with MPESA (stk push) for secure transactions.
 -   **Localization**: Full support for English and Swahili (Kiswahili) to ensure accessibility for all users.
+-   **Performance Optimized**: Features Redis/Memory caching, O(1) SQL query annotations, API pagination, and React memoization for rapid rendering.
 -   **USSD Integration**: (Planned) Offline access for farmers via feature phones.
 
 ## 🛠 Tech Stack
@@ -87,6 +88,19 @@ Start the development server:
 npm run dev
 ```
 The application will launch at `http://localhost:5173/`.
+
+### 3. Docker Deployment (Recommended)
+
+To run the entire stack (PostgreSQL, Django Backend, React Frontend) in production-ready containers:
+
+1. Ensure [Docker](https://docs.docker.com/get-docker/) and Docker Compose are installed.
+2. Run the stack from the root directory:
+```bash
+docker-compose up --build -d
+```
+The application will be available at:
+- **Frontend App:** `http://localhost/` (Port 80)
+- **Django API/Admin:** `http://localhost:8000/`
 
 ## 📂 Project Structure
 

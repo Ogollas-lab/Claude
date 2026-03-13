@@ -14,6 +14,22 @@ export const AuthProvider = ({ children }) => {
             setUser({ username: 'Agent' }); // Mock user object for now
         }
         setLoading(false);
+
+        // Axios Interceptor for 401 Unauthorized globally
+        const interceptor = axios.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.response && error.response.status === 401) {
+                    console.warn("Token expired or unauthorized. Logging out...");
+                    logout();
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
     }, [token]);
 
     const login = async (username, password) => {

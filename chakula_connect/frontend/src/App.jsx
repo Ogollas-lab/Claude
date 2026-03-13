@@ -13,6 +13,7 @@ import PrivateRoute from './components/PrivateRoute';
 import LanguageToggle from './components/LanguageToggle';
 import { LogOut, User, ShoppingBag } from 'lucide-react';
 import Marketplace from './pages/Marketplace';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function Dashboard() {
   const { t } = useLanguage();
@@ -74,22 +75,24 @@ function AppContent() {
           </div>
         </header>
 
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/logistics" element={
-            <PrivateRoute>
-              <Logistics />
-            </PrivateRoute>
-          } />
-          <Route path="/entry" element={
-            <PrivateRoute>
-              <FarmerEntry />
-            </PrivateRoute>
-          } />
-          <Route path="/marketplace" element={<Marketplace />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/logistics" element={
+              <PrivateRoute>
+                <Logistics />
+              </PrivateRoute>
+            } />
+            <Route path="/entry" element={
+              <PrivateRoute>
+                <FarmerEntry />
+              </PrivateRoute>
+            } />
+            <Route path="/marketplace" element={<Marketplace />} />
+          </Routes>
+        </ErrorBoundary>
 
         {/* Wallet Modal */}
         <WalletModal isOpen={isWalletModalOpen} onClose={() => setIsWalletModalOpen(false)} />
@@ -100,11 +103,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <LanguageProvider>
-        <AppContent />
-      </LanguageProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <LanguageProvider>
+          <AppContent />
+        </LanguageProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

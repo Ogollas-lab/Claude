@@ -101,4 +101,4 @@ const HeatMap = () => {
     );
 };
 
-export default HeatMap;
+export default React.memo(HeatMap);
